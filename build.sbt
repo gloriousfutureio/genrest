@@ -39,7 +39,7 @@ lazy val common = commonRootSettings ++ Seq(
   licenses += ("Apache-2.0", url("http://opensource.org/licenses/apache-2.0"))
 )
 
-lazy val classySwaggerCore = project in file("core") settings(common: _*) settings (
+lazy val core = project in file("core") settings(common: _*) settings (
   name := "classy-swagger",
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
@@ -47,6 +47,16 @@ lazy val classySwaggerCore = project in file("core") settings(common: _*) settin
     "me.jeffmay" %% "scalacheck-ops" % "1.1.0" % "test"
   )
 )
+
+lazy val play = project in file("play") settings(common: _*) settings (
+  name := "classy-swagger",
+  libraryDependencies ++= Seq(
+    "com.typesafe" %% "play" % "2.3.10",
+    "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
+    "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+    "me.jeffmay" %% "scalacheck-ops" % "1.1.0" % "test"
+  )
+) dependsOn (core)
 
 // don't publish the surrounding multi-project build
 publish := {}
