@@ -1,7 +1,7 @@
 organization in ThisBuild := "io.gloriousfuture"
 organizationName in ThisBuild := "The Glorious Future"
 
-version in ThisBuild := "0.0.1"
+version in ThisBuild := "0.0.1-SNAPSHOT"
 scalaVersion := "2.11.8"
 
 licenses in ThisBuild += ("Apache-2.0", url("http://opensource.org/licenses/apache-2.0"))
@@ -57,11 +57,37 @@ def commonProject(id: String, path: String): Project = {
     )
 }
 
+/**
+  * The scripted sbt projects also need to know any sbt opt overrides. For example:
+  * - if the .ivy2 location is in another place
+  * - if logging options should be changed
+  */
+lazy val defaultSbtOpts = settingKey[Seq[String]]("The contents of the default_sbt_opts env var.")
+lazy val javaOptsDebugger = settingKey[String]("Opens a debug port for scripted tests on 8000")
+
 def sbtPluginProject(id: String, path: String): Project = {
+
   commonProject(id, path).settings(
     sbtPlugin := true,
     sbtVersion := "0.13.13",
-    scalaVersion := "2.10.6"
+    scalaVersion := "2.10.6",
+    libraryDependencies += "org.scala-sbt" % "scripted-plugin" % sbtVersion.value
+  ).settings(
+    /**
+      * Scripted settings (see http://eed3si9n.com/testing-sbt-plugins)
+      */
+    scriptedSettings,
+    defaultSbtOpts := {
+      sys.env.get("default_sbt_opts").toSeq ++ sys.env.get("scripted_sbt_opts")
+    },
+    scriptedLaunchOpts := scriptedLaunchOpts.value ++ defaultSbtOpts.value ++ Seq(
+      "-Xmx1024M",
+      "-Dplugin.version=" + version.value,
+      javaOptsDebugger.value
+    ),
+    scriptedBufferLog := false,
+//    javaOptsDebugger := "-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
+    javaOptsDebugger := ""
   )
 }
 
