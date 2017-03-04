@@ -7,7 +7,7 @@ import cats.syntax.show._
 import io.circe.Json
 import io.circe.optics.JsonPath.root
 import io.circe.parser.parse
-import io.gloriousfuture.genrpc.openapi.v2.Root
+import io.gloriousfuture.genspec.openapi.v2.Root
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
@@ -15,7 +15,7 @@ import scala.reflect.ClassTag
 
 class PetstoreExampleSpec extends WordSpec with Matchers {
 
-  import CirceFormats._
+  import io.gloriousfuture.genspec.openapi.v2.circe.CirceFormats._
 
   object ExampleJson {
     val petstore: Json = {
