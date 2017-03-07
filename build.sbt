@@ -28,6 +28,7 @@ lazy val root = Project("genrpc-root", file("."))
 def commonProject(id: String, path: String): Project = {
   Project(id, file(path))
     .settings(
+      name := id,
 
       scalacOptions ++= {
         // the deprecation:false flag is only supported by scala >= 2.11.3, but needed for scala >= 2.11.0 to avoid warnings
@@ -100,9 +101,6 @@ def libProject(id: String, path: String): Project = {
 // Client-side libraries
 
 lazy val `genrpc-core` = libProject("genrpc-core", "genrpc/core")
-  .settings(
-    name := "genrpc-core"
-  )
 
 // TODO: Move to scripted
 //lazy val examplePlayYaml = (project in file("example/play-yaml"))
@@ -121,7 +119,6 @@ lazy val `genrpc-core` = libProject("genrpc-core", "genrpc/core")
   */
 lazy val `genspec-openapi-core` = libProject("genspec-openapi-core", "genspec/openapi/core")
   .settings(
-    name := "genspec-openapi-core",
     libraryDependencies ++= Seq(
       Libraries.scalacheck,
       Libraries.scalacheckShapeless
@@ -133,7 +130,6 @@ lazy val `genspec-openapi-core` = libProject("genspec-openapi-core", "genspec/op
   */
 lazy val `genspec-openapi-circe` = libProject("genspec-openapi-circe", "genspec/openapi/circe")
   .settings(
-    name := "genspec-openapi-circe",
     Plugins.macroParadise,
     libraryDependencies ++= Seq(
       Libraries.circeGeneric,
@@ -148,7 +144,6 @@ lazy val `genspec-openapi-circe` = libProject("genspec-openapi-circe", "genspec/
   */
 lazy val `genspec-openapi-yaml` = libProject("genspec-openapi-yaml", "genspec/openapi/yaml")
   .settings(
-    name := "genspec-openapi-yaml",
     resolvers ++= Seq(
       Resolvers.circeYaml
     ),
@@ -166,11 +161,13 @@ lazy val `genspec-openapi-yaml` = libProject("genspec-openapi-yaml", "genspec/op
   */
 lazy val `genspec-openapi-play` = libProject("genspec-openapi-play", "genspec/openapi/play")
   .settings(
-    name := "genspec-openapi-play",
     resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
-      Libraries.playServer
-    )
+      Libraries.play25Server
+    ) ++ Seq(
+      Libraries.play25Test,
+      Libraries.play25TestOps
+    ).map(_ % Test)
   )
   .dependsOn(`genspec-openapi-core`)
 
@@ -179,18 +176,12 @@ lazy val `genspec-openapi-play` = libProject("genspec-openapi-play", "genspec/op
   * An sbt plugin that allows you to generate OpenAPI.
   */
 lazy val `genspec-sbt-plugin` = sbtPluginProject("genspec-sbt-plugin", "genspec/sbt/sbt-plugin")
-  .settings(
-    name := "genspec-sbt-plugin"
-  )
 
 /**
   * An sbt plugin that hooks into play to generate the specs on reload of the application.
   */
 lazy val `genspec-play-plugin` = sbtPluginProject("genspec-play-plugin", "genspec/sbt/play-plugin")
   .settings(
-    name := "genspec-play-plugin",
-    scalaVersion := "2.10.6",
     resolvers += Resolvers.typesafeReleases,
     Plugins.playSbtPlugin
   )
-  .dependsOn(`genspec-sbt-plugin`)

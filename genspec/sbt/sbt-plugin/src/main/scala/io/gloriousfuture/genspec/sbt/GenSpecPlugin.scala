@@ -1,7 +1,6 @@
 package io.gloriousfuture.genspec.sbt
 
 import sbt.Keys._
-import sbt.Plugins.Basic
 import sbt._
 import sbt.classpath.ClasspathUtilities
 

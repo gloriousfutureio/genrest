@@ -2,7 +2,7 @@ package io.gloriousfuture.genspec.sbt.play
 
 import java.net.InetSocketAddress
 
-import play.PlayRunHook
+import play.sbt.PlayRunHook
 import sbt.classpath.ClasspathUtilities
 
 case class GenSpecPlayHook(rootSpecGenerator: String) extends PlayRunHook {

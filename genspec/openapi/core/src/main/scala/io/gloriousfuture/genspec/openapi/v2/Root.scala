@@ -12,6 +12,16 @@ case class Root(
   info: Info,
 
   /**
+    * Holds the relative paths to the individual endpoints.
+    *
+    * @note The path is appended to the basePath in order to construct the full URL.
+    * @note The path may not be empty, due to ACL constraints.
+    *
+    * (Required) The available paths and operations for the API.
+    */
+  paths: Map[ApiPath, JsonRefOr[PathOps]],
+
+  /**
     * The host (name or ip) serving the API.
     *
     * @note The field value cannot be the empty string.
@@ -53,16 +63,6 @@ case class Root(
     * @note Value MUST be as described under Mime Types.
     */
   produces: Option[Seq[String]] = None,
-
-  /**
-    * Holds the relative paths to the individual endpoints.
-    *
-    * @note The path is appended to the basePath in order to construct the full URL.
-    * @note The path may not be empty, due to ACL constraints.
-    *
-    * (Required) The available paths and operations for the API.
-    */
-  paths: Option[Map[ApiPath, JsonRefOr[PathOps]]] = None,
 
   /**
     * An object to hold data types produced and consumed by operations.
